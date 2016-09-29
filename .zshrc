@@ -24,3 +24,6 @@ setopt completealiases
 PROMPT="%{$fg_bold[red]%}〇%{$reset_color%} "
 
 alias pp='ps auxf | grep -v ]$'
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
