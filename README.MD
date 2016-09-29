@@ -7,7 +7,7 @@ chsh -s zsh
 
 cd ~
 
-curl -o .zshrc https://raw.github.com/remoting/linux/master/.zshrc
+curl -L -o .zshrc https://raw.github.com/remoting/linux/master/.zshrc
 
 source .zshrc
 ```
@@ -18,7 +18,7 @@ source .zshrc
 ```
 cd ~
 
-curl -o .bashrc https://raw.github.com/remoting/linux/master/.bashrc
+curl -L -o .bashrc https://raw.github.com/remoting/linux/master/.bashrc
 
 source .bashrc
 ```
