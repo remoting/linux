@@ -18,7 +18,7 @@ source .zshrc
 ```
 cd ~
 
-curl -o .bashrc https://raw.github.com/remoting/linux/master/.zshrc
+curl -o .bashrc https://raw.github.com/remoting/linux/master/.bashrc
 
 source .bashrc
 ```
