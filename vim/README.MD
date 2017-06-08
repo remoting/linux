@@ -3,12 +3,12 @@
 
 ```
 mkdir -p ~/.vim/autoload ~/.vim/bundle
-curl -LSso ~/.vim/autoload/pathogen.vim https://github.com/tpope/vim-pathogen/blob/master/autoload/pathogen.vim
+curl -LSso ~/.vim/autoload/pathogen.vim https://github.com/tpope/vim-pathogen/raw/master/autoload/pathogen.vim
 ```
  
 ## 配置VIM
 ```
-curl -LSso ~/.vimrc https://github.com/tpope/vim-pathogen/blob/master/autoload/pathogen.vim
+curl -LSso ~/.vimrc https://github.com/remoting/linux/raw/master/vim/.vimrc
 ```
 
 ## 安装主题
