@@ -13,6 +13,5 @@ curl -LSso ~/.vimrc https://github.com/remoting/linux/raw/master/vim/.vimrc
 
 ## 安装主题
 ```
-cd ~/.vim/bundle
-git clone git://github.com/altercation/vim-colors-solarized.git
+git clone git://github.com/altercation/vim-colors-solarized.git ~/.vim/bundle
 ```
