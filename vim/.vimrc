@@ -4,8 +4,13 @@ filetype plugin indent on
 
 syntax enable
 syntax on
-
-set background=dark
+" let g:solarized_termtrans=1
+let g:solarized_termcolors=256
+if has('gui_running')
+    set background=light
+else
+    set background=dark
+endif
 colorscheme solarized
 
 set ruler
