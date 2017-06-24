@@ -1,0 +1,7 @@
+dn: olcDatabase={0}config,cn=config
+changetype: modify
+add: olcRootPW
+olcRootPW: {SSHA}InKgLWWY34U6ITWVWO9OqUltPvHkNk7x
+
+
+# ldapadd -Y EXTERNAL -H ldapi:/// -f chrootpw.ldif

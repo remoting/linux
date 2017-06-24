@@ -1,0 +1,21 @@
+dn: dc=openbridge,dc=cn
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: openbridge cn
+dc: openbridge
+
+dn: cn=Manager,dc=openbridge,dc=cn
+objectClass: organizationalRole
+cn: Manager
+description: Directory Manager
+
+dn: ou=People,dc=openbridge,dc=cn
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=Group,dc=openbridge,dc=cn
+objectClass: organizationalUnit
+ou: Group
+
+# ldapadd -x -D cn=Manager,dc=openbridge,dc=cn -W -f basedomain.ldif
