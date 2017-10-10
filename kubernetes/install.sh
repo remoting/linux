@@ -17,6 +17,8 @@ kube::getip() {
     fi
 }
 kube::master_config_cafile() {
+  if [ ! -f "/etc/kubernetes/ssl/ca.pem" ]; then
+
   EXPIRY_YEAR=10
   EXPIRY_HOUR="$((EXPIRY_YEAR*8760))h"
   MASTER_IP=$(kube::getip)
@@ -93,6 +95,8 @@ EOF
   cd /etc/kubernetes/ssl
   cfssl gencert -initca ca-csr.json | cfssljson -bare ca
   cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes kubernetes-csr.json | cfssljson -bare kubernetes
+
+  fi
 }
 kube::master_config_auth()
 {
@@ -217,7 +221,8 @@ EOF
 
 kube::show_config_token()
 {
-    cat /etc/kubernetes/auth/token.csv | awk -F, '{print $1}'
+    local K8STOKEN=$(cat /etc/kubernetes/auth/token.csv | awk -F, '{print $1}')
+    echo "Install master token: $K8STOKEN"
 }
 kube::install_etcd()
 {
