@@ -1,0 +1,13 @@
+flanneld
+
+docker run --rm --net=host quay.io/coreos/etcd etcdctl set /coreos.com/network/config '{ "Network": "10.20.0.0/16", "Backend": {"Type": "vxlan"}}'
+docker run --rm --net=host quay.io/coreos/etcd etcdctl get /coreos.com/network/config
+curl 127.0.0.1:2379/v2/keys/coreos.com/network
+
+FLANNEL_NETWORK=10.20.0.0/16
+FLANNEL_SUBNET=10.20.1.1/24
+FLANNEL_MTU=1450
+FLANNEL_IPMASQ=false
+
+
+flanneld -subnet-file=/etc/flannel/subnet.env --etcd-endpoints=http://192.168.40.186:2379 --iface=ens33
