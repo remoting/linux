@@ -1,0 +1,20 @@
+dn: ou=Groups,dc=cloud,dc=yonghui,dc=cn
+objectClass: organizationalUnit
+ou: Groups
+
+dn: ou=Roles,dc=cloud,dc=yonghui,dc=cn
+objectClass: organizationalUnit
+ou: Roles
+
+dn: ou=Users,dc=cloud,dc=yonghui,dc=cn
+objectClass: organizationalUnit
+ou: Users
+
+dn: ou=Projects,dc=cloud,dc=yonghui,dc=cn
+objectClass: organizationalUnit
+ou: Projects
+
+dn: cn=9fe2ff9ee4384b1894a90878d3e92bab,ou=Roles,dc=cloud,dc=yonghui,dc=cn
+objectClass: organizationalRole
+ou: _member_
+cn: 9fe2ff9ee4384b1894a90878d3e92bab
