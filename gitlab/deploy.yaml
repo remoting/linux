@@ -1,0 +1,48 @@
+kind: Deployment
+apiVersion: apps/v1beta2
+metadata:
+  labels:
+    k8s-app: cloud-service-openstack
+  name: cloud-service-openstack-deployment
+  namespace: cmp
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      k8s-app: cloud-service-openstack
+  template:
+    metadata:
+      labels:
+        k8s-app: cloud-service-openstack
+    spec:
+      containers:
+      - name: cloud-service-openstack
+        image: ycloud/cloud-service-openstack:0.1-293
+        ports:
+        - containerPort: 10002
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /yhops/health
+            port: 10002
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
+      imagePullSecrets:
+      - name: regcred
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: cloud-service-openstack
+  name: cloud-service-openstack
+  namespace: cmp
+spec:
+  ports:
+  - port: 10002
+    targetPort: 10002
+    protocol: TCP
+  selector:
+    k8s-app: cloud-service-openstack

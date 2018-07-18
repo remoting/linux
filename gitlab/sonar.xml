@@ -1,0 +1,8 @@
+<sonar.host.url>http://xxx:9000</sonar.host.url>
+<sonar.login>admin</sonar.login>
+<sonar.password>admin</sonar.password>
+
+pom.xml里面添加以上配置
+
+使用如下编译命令即可
+mvn clean package sonar:sonar 

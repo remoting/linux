@@ -1,0 +1,16 @@
+concurrent = 1
+check_interval = 0
+
+[[runners]]
+  name = "cmp-console"
+  url = "http://git.dev.ccc/"
+  token = "ccc"
+  executor = "docker"
+  [runners.docker]
+    tls_verify = false
+    image = "public/docker:7"
+    privileged = false
+    disable_cache = false
+    volumes = ["/root/.m2:/root/.m2","/var/run/docker.sock:/var/run/docker.sock","/cache"]
+    shm_size = 0
+  [runners.cache]

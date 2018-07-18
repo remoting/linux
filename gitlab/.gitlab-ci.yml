@@ -1,0 +1,46 @@
+variables:
+  ServiceName: "cloud-service-openstack"
+  ServiceVersion: "0.1"
+  DockerImageName: "ycloud/${ServiceName}:${ServiceVersion}-${CI_JOB_ID}"
+ 
+cache:
+  paths:
+    - target/
+    
+stages:
+  - build
+  - package
+  - deploy
+  
+before_script:
+  - cd $CI_PROJECT_DIR
+  
+build_java:
+  image: public/centos7-java8-maven3:1
+  stage: build
+  script:
+    - echo "bb" >> /cache/sss.txt
+    - cat /cache/sss.txt
+    - mvn clean package -Dmaven.test.skip=true
+  tags:
+    - cmp
+    
+build_image:
+  image: public/docker:latest
+  stage: package
+  script:
+    - docker login -u xxx -p xxx http://xxx
+    - docker build -t $DockerImageName .
+    - docker push $DockerImageName
+  tags:
+    - cmp
+
+deploy_test:
+  image: public/centos7-kubectl:1
+  stage: deploy
+  environment: test
+  script:
+    - env
+    - kubectl apply -f deploy.yml
+  tags:
+    - cmp
