@@ -1,8 +1,8 @@
 kubectl create rolebinding
 
-clusterrole
 role
 rolebinding
-clusterrolebind
+clusterrole
+clusterrolebinding
 
 kubectl create clusterrolebinding root-cluster-admin-binding --clusterrole=cluster-admin --user=admin

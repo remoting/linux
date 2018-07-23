@@ -16,26 +16,18 @@ docker
 kubelet
 	ExecStart=/usr/bin/kubelet --pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/k10/pause-amd64:3.1 --fail-swap-on=false
 
+cat <<EOF > k8sconfig.yaml
 apiVersion: kubeadm.k8s.io/v1alpha1
 kind: MasterConfiguration
 kubernetesVersion: v1.10.5
 imageRepository: registry.cn-hangzhou.aliyuncs.com/k10
+networking:
+  podSubnet: 10.244.0.0/16
+EOF
 
-./kubeadm reset
-./kubeadm init --config=config --ignore-preflight-errors="Swap"
+kubeadm reset
 
-
-[apiclient] All control plane components are healthy after 108.001987 seconds
-[uploadconfig] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
-[markmaster] Will mark node k8smaster as master by adding a label and a taint
-[markmaster] Master k8smaster tainted and labelled with key/value: node-role.kubernetes.io/master=""
-[bootstraptoken] Using token: 2wy8mg.iagkjq66qeiekd99
-[bootstraptoken] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
-[bootstraptoken] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
-[bootstraptoken] Configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
-[bootstraptoken] Creating the "cluster-info" ConfigMap in the "kube-public" namespace
-[addons] Applied essential addon: kube-dns
-[addons] Applied essential addon: kube-proxy
+kubeadm init --config=k8sconfig.yaml --ignore-preflight-errors="Swap"
 
 Your Kubernetes master has initialized successfully!
 
@@ -52,4 +44,4 @@ Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
 You can now join any number of machines by running the following on each node
 as root:
 
-  kubeadm join 172.16.211.131:6443 --token 2wy8mg.iagkjq66qeiekd99 --discovery-token-ca-cert-hash sha256:bcdb0b823776ebd2a6ebc12506a599216feba99a2a3bc7a9d0d90c631c476aba
+  kubeadm join 172.16.211.131:6443 --token h10dsr.l16p0gc6j7nkxyrk --discovery-token-ca-cert-hash sha256:a97c5c4c1fe36e29910c71a8a9ae67fca5b15bbc70d898bf37aa7d83824ac91b
