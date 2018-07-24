@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-demo1
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kube-demo1
+  template:
+    metadata:
+      labels:
+        app: kube-demo1
+    spec:
+      containers:
+      - name: demo
+        image: registry.cn-hangzhou.aliyuncs.com/k10/curl:1
