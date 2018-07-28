@@ -1,0 +1,86 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: kube-webssh
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+  - kind: ServiceAccount
+    name: kube-webssh
+    namespace: kube-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kube-webssh
+  namespace: kube-system
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: kube-webssh-cfg
+  namespace: kube-system
+data:
+  config: |-
+    apiVersion: v1
+    kind: Config
+    clusters:
+    - cluster:
+        certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        server: https://10.96.0.1:443
+      name: default
+    contexts:
+    - context:
+        cluster: default
+        namespace: default
+        user: default
+      name: default
+    current-context: default
+    users:
+    - name: default
+      user:
+        tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-webssh
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-webssh
+  template:
+    metadata:
+      labels:
+        app: kube-webssh
+    spec:
+      serviceAccountName: kube-webssh
+      containers:
+      - name: websshd
+        image: registry.cn-hangzhou.aliyuncs.com/k10/webssh:1.0
+        volumeMounts:
+        - name: kube-webssh-cfg
+          mountPath: /root/.kube
+      volumes:
+        - name: kube-webssh-cfg
+          configMap:
+            name: kube-webssh-cfg
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: kube-webssh
+  name: kube-webssh
+  namespace: kube-system
+spec:
+  type: NodePort
+  ports:
+  - port: 50000
+    targetPort: 50000
+  selector:
+    app: kube-webssh
