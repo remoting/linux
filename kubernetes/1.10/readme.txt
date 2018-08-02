@@ -1,3 +1,14 @@
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "api-enable-cors": true,
+  "api-cors-header": "*",
+  "hosts": ["unix:///var/run/docker.sock", "tcp://0.0.0.0:2375"],
+  "registry-mirrors": ["https://4ssmxahm.mirror.aliyuncs.com"],
+  "insecure-registries": ["registry.yonghui.cn","10.0.56.31","10.0.56.31:80"]
+}
+EOF
+
 ---
 [cmp-master kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 10.0.90.140]
 ---
