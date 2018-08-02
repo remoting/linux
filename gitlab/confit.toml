@@ -1,16 +1,17 @@
-concurrent = 1
+concurrent = 3
 check_interval = 0
 
 [[runners]]
   name = "cmp-console"
-  url = "http://git.dev.ccc/"
-  token = "ccc"
+  url = "http://git.dev.yonghui.cn/"
+  token = "f2f8872080951b6b040a45c266e5cb"
   executor = "docker"
   [runners.docker]
     tls_verify = false
-    image = "public/docker:7"
+    image = "registry.yonghui.cn/public/docker:7"
     privileged = false
     disable_cache = false
-    volumes = ["/root/.m2:/root/.m2","/var/run/docker.sock:/var/run/docker.sock","/cache"]
+    volumes = ["/root/.npm:/root/.npm","/root/.ssh:/root/.ssh","/root/.sonar:/root/.sonar","/root/.m2:/root/.m2","/var/run/docker.sock:/var/run/docker.sock","/cache"]
+    pull_policy = "if-not-present"
     shm_size = 0
   [runners.cache]
