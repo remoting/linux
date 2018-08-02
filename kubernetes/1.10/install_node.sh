@@ -10,6 +10,7 @@ hostnamectl set-hostname cmp-node-00x
 
 # 关闭防火墙
 systemctl disable firewalld
+
 # 安装Docker
 yum install -y --nogpgcheck \
     http://mirrors.aliyun.com/docker-engine/yum/repo/main/centos/7/Packages/docker-engine-selinux-1.13.1-1.el7.centos.noarch.rpm \
