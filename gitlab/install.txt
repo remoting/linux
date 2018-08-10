@@ -1,0 +1,24 @@
+	yum install -y curl policycoreutils-python openssh-server openssh-clients postfix
+	
+	firewall-cmd --permanent --add-service=http
+	
+	systemctl reload firewalld
+	
+	curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+	
+	yum install -y gitlab-ce
+
+
+#Gitlab 记录
+gitlab-rails console production
+user = User.where(id: 1).first
+user.password=12345678
+user.password_confirmation=12345678
+user.save!
+quit
+
+#重新配置
+gitlab-ctl reconfigure
+
+#重启
+gitlab-ctl restart

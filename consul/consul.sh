@@ -1,3 +1,5 @@
+#!/bin/bash
+
 user=$(id -u)
 echo "current user id: $user"
 
@@ -32,11 +34,25 @@ consul::del()
     local consul_addr=$1
     local str_name=$2
     echo "删除服务：$consul_addr $str_name"
-    curl -v -XPUT "$consul_addr:8500/v1/agent/service/deregister/$str_name"
+    curl -XPUT "$consul_addr:8500/v1/agent/service/deregister/$str_name"
     
 }
+consul::dchk()
+{
+    local consul_addr=$1
+    local str_name=$2
+    echo "删除Check：$consul_addr $str_name"
+    curl -XPUT "$consul_addr:8500/v1/agent/check/deregister/$str_name"
 
-
+}
+consul::clear()
+{
+    local consul_addr=$1
+    local ids=`curl -s "$consul_addr:8500/v1/health/state/critical" | jq '.[]' | jq -r '.ServiceID'`
+    for i in $ids; do
+      consul::del $1 $i;
+    done;
+}
 main()
 {
     case $1 in
@@ -46,10 +62,18 @@ main()
     "d" | "del" )
         consul::del $2 $3
         ;;
+    "dc" | "dc" )
+        consul::dchk $2 $3
+        ;;
+    "c" | "clear" )
+        consul::clear $2
+        ;;
     *)
-        echo "usage: $0 reg | del"
-        echo "       $0 reg consulHost serviceName ip port  "
+        echo "usage: $0 reg | del | clear"
+        echo "       $0 reg consulHost serviceName ip port "
         echo "       $0 del consulHost serviceName "
+        echo "       $0 dc consulHost checkId "
+        echo "       $0 clear consulHost "
         ;;
     esac
 }

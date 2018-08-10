@@ -1,0 +1,21 @@
+agent "" {
+	policy = "read" 
+}
+node "" { 
+	policy = "read" 
+} 
+service "" { 
+	policy = "write" 
+}
+key "" { 
+	policy = "write" 
+}
+event "" { 
+	policy = "write" 
+}
+query "" {
+	policy = "write" 
+}
+session "" {
+	policy = "write" 
+}

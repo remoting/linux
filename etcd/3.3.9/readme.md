@@ -41,25 +41,7 @@ etcdctl --endpoints=https://127.0.0.1:2379 \
 # 客户端
 export ETCDCTL_API=3
 export ETCDCTL_ENDPOINTS=http://172.16.211.134:2379
-export ETCDCTL_USER=root:123456
 etcdctl endpoint status --write-out=table 
 etcdctl endpoint health
----
-etcdctl user add root
-etcdctl auth enable
----
-etcdctl user add user002
-etcdctl role add role002
-etcdctl user grant-role user002 role002
-etcdctl role grant-permission role002 --prefix=true readwrite /user002
----
-etcdctl user list
-etcdctl user revoke-role user002 role002
-etcdctl user get user002
-etcdctl user delete user002
----
-etcdctl role list
-etcdctl role get role002
-etcdctl role revoke-permission role002 --prefix=true /user002
-etcdctl role remove role002
----
+
+ 
