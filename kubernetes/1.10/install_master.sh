@@ -40,10 +40,20 @@ systemctl start kubelet
 cat <<EOF > k8sconfig.yaml
 apiVersion: kubeadm.k8s.io/v1alpha1
 kind: MasterConfiguration
-kubernetesVersion: v1.10.5
+kubernetesVersion: "v1.10.5"
 imageRepository: registry.cn-hangzhou.aliyuncs.com/k10
 networking:
   podSubnet: 10.244.0.0/16
+  serviceSubnet: 10.96.0.0/16
+kubeProxy:
+  config:
+    mode: "ipvs"
+    featureGates: 
+      SupportIPVSProxyMode: true
+    clusterCIDR: 10.96.0.0/16
+apiServerCertSANs:
+featureGates:
+  CoreDNS: true
 EOF
  
 # 安装Master
