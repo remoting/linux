@@ -1,0 +1,6 @@
+ALERT g43_s3 
+  IF job:container_cpu_used:s3{}  
+  ANNOTATIONS {type="node_cpu_used",value="{{ $value }}", labels="{{ $labels.instance }}"}
+ALERT g43_s3 
+  IF job:container_mem_used:s3{} > 80 and job:container_mem_used:s3{} <= 100.0
+  ANNOTATIONS {type="node_mem_used",value="{{ $value }}", labels="{{ $labels.instance }}"}

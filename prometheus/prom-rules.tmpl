@@ -1,0 +1,15 @@
+# alert config
+{{range gets "/runtime/prometheus/alarm/*"}}{{$alarm := json .Value}}{{$hosts := $alarm.attach.hosts}}{{$pods := $alarm.serviceId}}
+{{range $alarm.attach.strategyIds}}{{$sid := .}}{{$key := printf "/runtime/prometheus/rules/%s" $sid}}
+
+{{range getvs $key}}{{$rule := json .}}{{range $rule.expressions}}
+ALERT g{{$alarm.grpId}}_s{{$sid}}
+  IF alert:{{.metric}}:s{{$rule.strategyId}}{{if eq $alarm.type "2"}}{instance=~"({{range $i, $e := $hosts}}{{if $i}}|{{end}}{{$e}}{{end}}).*"}{{else if eq $alarm.type "3"}}{pod_name=~"({{$pods}}).*"}{{end}}
+  ANNOTATIONS {type="{{.metric}}",value="{{"{{ $value }}"}}", instance="{{"{{ $labels.instance }}"}}"}
+{{end}}{{end}}{{end}}{{end}}
+
+# alert rules
+{{range gets "/runtime/prometheus/rules/*"}}
+{{$rules := json .Value}}
+{{range $rules.expressions}}alert:{{.metric}}:s{{$rules.strategyId}}{} = {{.expression}}
+{{end}}{{end}}
