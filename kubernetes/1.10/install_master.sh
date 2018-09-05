@@ -33,8 +33,8 @@ sed -i "s/\/usr\/bin\/kubelet/\/usr\/bin\/kubelet --pod-infra-container-image=re
 systemctl daemon-reload
 systemctl enable docker
 systemctl enable kubelet
-systemctl start docker
-systemctl start kubelet
+systemctl restart docker
+systemctl restart kubelet
 
 # 创建配置
 cat <<EOF > k8sconfig.yaml

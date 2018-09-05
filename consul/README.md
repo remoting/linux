@@ -18,7 +18,7 @@ README.txt
 ./consul.sh reg 10.0.91.169 cloud-service-volume 10.0.91.153 8776
 ./consul.sh reg 10.0.91.169 cloud-service-identity 10.0.91.153 5000
 
-集群搭建
+#集群搭建
 https://www.cnblogs.com/shanyou/p/6286207.html
  node001 
  ./consul agent -server -bootstrap-expect 2 -data-dir=data -node=n1 -bind=10.0.0.5 -client=0.0.0.0 &
@@ -29,3 +29,30 @@ https://www.cnblogs.com/shanyou/p/6286207.html
  node003
  ./consul agent -server -bootstrap-expect 2 -data-dir=data -node=n3 -bind=10.0.0.7 -client=0.0.0.0 &
  ./consul join 10.0.0.5
+
+#agent
+consul agent -data-dir /tmp/consul -client 10.11.90.56 -advertise 10.9.50.56 -retry-join 10.9.50.2 -retry-join 10.9.50.3 -retry-join 10.9.50.4 -datacenter saas-test
+
+#集群搭建样例
+
+nohup consul agent -server -bootstrap-expect 2 -ui \
+	-data-dir=/data/consul \
+	-datacenter=saas-test \
+	-node=n3 \
+	-advertise=10.9.50.4 \
+	-client=0.0.0.0 >> /data/logs/logs.log 2>&1 &
+
+nohup consul agent -server -bootstrap-expect 2 -ui \
+	-data-dir=/data/consul \
+	-datacenter=saas-test \
+	-node=n2 \
+	-advertise=10.9.50.3 \
+	-client=0.0.0.0 >> /data/logs/logs.log 2>&1 &
+
+nohup consul agent -server -bootstrap-expect 2 -ui \
+	-data-dir=/data/consul \
+	-datacenter=saas-test \
+	-node=n1 \
+	-advertise=10.9.50.2 \
+	-client=0.0.0.0 >> /data/logs/logs.log 2>&1 &
+

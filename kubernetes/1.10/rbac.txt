@@ -6,3 +6,8 @@ clusterrole
 clusterrolebinding
 
 kubectl create clusterrolebinding root-cluster-admin-binding --clusterrole=cluster-admin --user=admin
+
+
+kubectl create secret docker-registry regcred --docker-server="http://registry.yonghui.cn" --docker-username="ycloud" --docker-password="Yc123456" --docker-email="r@y.cn" --namespace=cmp
+
+kubectl create secret docker-registry regcred --docker-server="http://registry.dev.chelizitech.com" --docker-username="saas" --docker-password="Abcd1234" --docker-email="r@y.cn" --namespace=default

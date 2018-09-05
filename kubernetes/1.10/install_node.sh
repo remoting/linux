@@ -33,8 +33,8 @@ sed -i "s/\/usr\/bin\/kubelet/\/usr\/bin\/kubelet --pod-infra-container-image=re
 systemctl daemon-reload
 systemctl enable docker
 systemctl enable kubelet
-systemctl start docker
-systemctl start kubelet
+systemctl restart docker
+systemctl restart kubelet
 
 # 主节点添加token
 kubeadm token create --print-join-command
