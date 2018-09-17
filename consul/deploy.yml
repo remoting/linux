@@ -22,10 +22,10 @@ spec:
       containers:
       - name: consul-client
         image: registry.dev.chelizitech.com/public/consul:1.2.2
-        command: ["consul","agent","-data-dir=/tem/consul","-advertise=$(MY_HOST_IP)","-retry-join=10.9.50.2","-retry-join=10.9.50.3","-retry-join=10.9.50.4","-datacenter=saas-test"]
+        command: ["/usr/local/bin/docker-entrypoint.sh","agent","-advertise","$(MY_HOST_IP)","-client","$(MY_HOST_IP)"]
         env:
         - name: CONSUL_LOCAL_CONFIG
-          value: '{"leave_on_terminate": true}'
+          value: '{"datacenter":"saas-test","leave_on_terminate":true,"acl_datacenter":"saas-test","acl_agent_token":"7b2d852a-c7be-43ce-b09d-68fa31f30b0a","server":false,"retry_join":["10.9.50.2","10.9.50.3","10.9.50.4"]}'
         - name: MY_HOST_IP
           valueFrom:
             fieldRef:

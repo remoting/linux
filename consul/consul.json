@@ -1,18 +1,19 @@
 {
-  "datacenter": "cmp-test",
-  "data_dir": "/data/tmp/consul/data",
+  "datacenter": "saas-test",
+  "acl_datacenter": "saas-test",
+  "acl_master_token": "60a97597-fce3-433a-932d-22c850e92df1",
+  "acl_agent_token": "7b2d852a-c7be-43ce-b09d-68fa31f30b0a",
+  "acl_default_policy": "deny",
+  "data_dir": "/data/consul",
   "log_level": "INFO",
-  "node_name": "cmp-spring",
+  "node_name": "n1",
   "server": true,
-  "domain": "cmp.local",
-  "advertise_addr": "192.168.3.30",
+  "domain": "test.saas.local",
+  "advertise_addr": "10.9.50.2",
   "addresses": {
     "https": "0.0.0.0"
   },
-  "ports":{
-  },
-  "acl_token":"eeeeeeee"
-  "bootstrap_expect":1,
+  "bootstrap_expect": 2,
   "client_addr":"0.0.0.0",
   "ui":true
 }
