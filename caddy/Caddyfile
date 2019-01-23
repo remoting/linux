@@ -1,0 +1,18 @@
+:80
+gzip
+
+log stdout
+errors stdout
+
+root /root/web/
+
+header / {
+    Access-Control-Allow-Origin  *
+    Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    -Server
+}
+ 
+
+rewrite {
+    to {path} {path}/ /
+}

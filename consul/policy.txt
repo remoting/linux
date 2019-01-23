@@ -1,3 +1,6 @@
+---
+clent
+---
 agent "" {
 	policy = "read" 
 }
@@ -18,4 +21,16 @@ query "" {
 }
 session "" {
 	policy = "write" 
+}
+---
+agent
+---
+node "" {
+  policy = "write"
+}
+service "" {
+  policy = "read"
+}
+key "_rexec" {
+  policy = "write"
 }
