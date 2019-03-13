@@ -11,8 +11,8 @@ consul::getip() {
 }
 consul::reg()
 {
-    local consul_addr=$SPRING_CONSUL_HOST 
-    local consul_port=${SPRING_CONSUL_PORT:-"8500"}
+    local consul_addr=$SPRING_CLOUD_CONSUL_HOST 
+    local consul_port=${SPRING_CLOUD_CONSUL_PORT:-"8500"}
     local consul_token=$SPRING_CLOUD_CONSUL_TOKEN
     local str_name=$1
     local str_path=$2
