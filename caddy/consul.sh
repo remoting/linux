@@ -16,6 +16,10 @@ consul::reg()
     local consul_token=$SPRING_CLOUD_CONSUL_TOKEN
     local str_name=$1
     local str_path=$2
+    local str_health=$2
+    if [ "$3" != "" ] ;then
+       str_health=$3
+    fi
     local str_ip=$(consul::getip)
     local str_port=${CTL_SERVICE_PORT:-"80"}
     local srv_config=`cat <<EOF
@@ -28,18 +32,19 @@ consul::reg()
         "checks": [
             {
                 "DeregisterCriticalServiceAfter":"3m",
-                "tcp": "$str_ip:$str_port",
+                "http": "http://$str_ip:$str_port$str_health",
                 "interval": "15s",
-                "timeout": "5s"
+                "timeout": "10s",
+                "status": "passing"
             }
         ]
     }
 EOF`
     echo "注册服务:consul $consul_addr:$consul_port,token $consul_token"
     echo "$srv_config" 
-    curl -L --header "X-Consul-Token: $consul_token" http://$consul_addr:$consul_port/v1/agent/service/register -XPUT -d "${srv_config}"
+    curl -v --header "X-Consul-Token: $consul_token" http://$consul_addr:$consul_port/v1/agent/service/register -XPUT -d "${srv_config}"
 }
 
 
-sleep 2
-consul::reg $1 $2
+sleep 3
+consul::reg $1 $2 $3
