@@ -1,19 +1,18 @@
 {
-  "datacenter": "saas-test",
-  "acl_datacenter": "saas-test",
-  "acl_master_token": "60a97597-fce3-433a-932d-22c850e92df1",
-  "acl_agent_token": "7b2d852a-c7be-43ce-b09d-68fa31f30b0a",
+  "datacenter": "uat",
+  "acl_datacenter": "uat",
+  "acl_master_token":"uuidgen",
   "acl_default_policy": "deny",
   "data_dir": "/data/consul",
-  "log_level": "INFO",
-  "node_name": "n1",
+  "log_level": "WARN",
+  "node_name": "n3",
   "server": true,
-  "domain": "test.saas.local",
-  "advertise_addr": "10.9.50.2",
+  "domain": "uat.local",
+  "advertise_addr": "10.9.38.136",
   "addresses": {
     "https": "0.0.0.0"
   },
-  "bootstrap_expect": 2,
+  "bootstrap_expect": 1,
   "client_addr":"0.0.0.0",
   "ui":true
 }
