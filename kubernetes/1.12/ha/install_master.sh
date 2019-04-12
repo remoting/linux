@@ -34,6 +34,7 @@ failSwapOn: false
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
 mode: "ipvs"
+clusterCIDR: "10.244.0.0/16"
 EOF
  
 # 安装Master
