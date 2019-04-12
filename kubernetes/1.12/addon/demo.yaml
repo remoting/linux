@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-demo
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kube-demo
+  template:
+    metadata:
+      labels:
+        app: kube-demo
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: kube-demo
+  name: kube-demo
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: kube-demo
