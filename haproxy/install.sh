@@ -1,0 +1,2 @@
+make TARGET=osx ARCH=x86_64 PREFIX=/usr/local/haproxy USE_POLL=1 USE_OPENSSL=1 USE_PCRE=1 USE_THREAD=1 USE_ZLIB=1 USE_KQUEUE=1 USE_LUA=1 LUA_LIB=/usr/local/opt/lua/lib LUA_INC=/usr/local/opt/lua/include/lua5.3 SSL_INC=/usr/local/opt/openssl/include SSL_LIB=/usr/local/opt/openssl/lib
+make install PREFIX=/usr/local/haproxy
