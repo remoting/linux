@@ -8,6 +8,10 @@ apiVersion: kubeadm.k8s.io/v1alpha3
 kind: ClusterConfiguration
 kubernetesVersion: v1.12.7
 imageRepository: registry.cn-hangzhou.aliyuncs.com/google-kubernetes
+etcd:
+  external:
+    endpoints:
+    - http://10.11.46.201:2379
 networking:
   dnsDomain: cluster.local
   podSubnet: "10.244.0.0/16"
