@@ -1,0 +1,5 @@
+[master]
+10.11.46.201 ansible_ssh_user=root hostname=node0011
+
+[node]
+10.11.46.202 ansible_ssh_user=root hostname=node0012

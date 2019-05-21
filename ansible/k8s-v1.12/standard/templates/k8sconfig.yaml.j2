@@ -1,0 +1,32 @@
+apiVersion: kubeadm.k8s.io/v1alpha3
+kind: InitConfiguration
+bootstrapTokens:
+- groups:
+  - system:bootstrappers:kubeadm:default-node-token
+  token: {{ token_result.stdout }}
+  ttl: 0s
+  usages:
+  - signing
+  - authentication
+---
+apiVersion: kubeadm.k8s.io/v1alpha3
+kind: ClusterConfiguration
+kubernetesVersion: v1.12.7
+imageRepository: registry.cn-hangzhou.aliyuncs.com/google-kubernetes
+etcd:
+  external:
+    endpoints:
+    - http://{{ansible_host}}:2379
+networking:
+  dnsDomain: cluster.local
+  podSubnet: "10.244.0.0/16"
+  serviceSubnet: "10.240.0.0/16"
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+failSwapOn: false
+---
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+kind: KubeProxyConfiguration
+mode: "ipvs"
+clusterCIDR: "10.244.0.0/16"

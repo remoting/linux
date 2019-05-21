@@ -1,0 +1,127 @@
+--- 
+
+- hosts: all
+  user: root
+  gather_facts: true
+  tasks:
+  - name: "set hostname"
+    hostname: 'name={{ hostname }}'
+  - name: "add hosts"
+    lineinfile:
+      dest: /etc/hosts
+      line: "127.0.0.1 {{ hostname }}"
+  - name: "disabled selinux"
+    selinux: state=disabled
+  - name: "disabled firewalld"
+    shell: "systemctl disable firewalld && systemctl stop firewalld"
+  - name: "enable ipvs"
+    script: ./script/ipvs.sh 
+  - stat: path=/usr/bin/docker
+    register: tmpf1
+  - stat: path=/usr/bin/kubelet
+    register: tmpf2
+  - name: "install dokcer"
+    shell: |
+      yum install -y --nogpgcheck https://mirrors.aliyun.com/docker-ce/linux/centos/7/x86_64/stable/Packages/docker-ce-18.06.3.ce-3.el7.x86_64.rpm
+      systemctl daemon-reload
+      systemctl enable docker
+      systemctl restart docker
+    when: not tmpf1.stat.exists
+  - name: "install kubelet"
+    script: ./script/kubelet.sh
+    when: not tmpf2.stat.exists
+
+- hosts: master
+  user: root
+  gather_facts: true
+  tasks:  
+  - name: "check ectd stat"
+    stat: path=/usr/local/bin/etcd
+    register: tmpf
+  - name: "etcd config"
+    template: src=./templates/etcd.service.j2 dest=/etc/systemd/system/etcd.service
+    when: not tmpf.stat.exists
+  - name: "install etcd"
+    script: ./script/etcd.sh
+    when: not tmpf.stat.exists
+
+- hosts: master
+  user: root
+  gather_facts: true
+  vars:
+    tmpd: /root/pki
+  tasks:
+  - name: "token check"
+    local_action: stat path=./token.var
+    register: tmpf1
+  - name: "k8s token gen"
+    shell: "kubeadm token generate"
+    register: token_result
+    when: not tmpf1.stat.exists
+  - name: "k8s save token"
+    local_action: copy content="{{ token_result.stdout }}" dest="./token.var"
+    when: not tmpf1.stat.exists
+  - name: "k8s load token"
+    local_action: shell cat ./token.var
+    register: token_result
+  - name: "mkdir"
+    file:
+      path: /root/pki
+      state: directory
+  - stat: path=/root/pki/apiserver-csr.conf
+    register: tmpf2
+  - stat: path=/root/pki/ca.crt
+    register: tmpf3
+  - name: "k8s config copy"
+    template:
+      src: '{{ item.src }}'
+      dest: '{{ item.dest }}'
+    with_items:
+    - { src: './templates/k8sconfig.yaml.j2', dest: '/root/k8sconfig.yaml' }
+    - { src: './templates/pki/front-proxy-client-csr.conf.j2', dest: '{{tmpd}}/front-proxy-client-csr.conf' }
+    - { src: './templates/pki/apiserver-kubelet-client-csr.conf.j2', dest: '{{tmpd}}/apiserver-kubelet-client-csr.conf' }
+    - { src: './templates/pki/apiserver-csr.conf.j2', dest: '{{tmpd}}/apiserver-csr.conf' }
+    when: not tmpf2.stat.exists
+  - name: "k8s certificates"
+    shell: |
+      cd {{tmpd}}/
+      openssl genrsa -out ca.key 2048
+      openssl req -x509 -new -nodes -key ca.key -subj "/CN=kubernetes" -days 3650 -out ca.crt
+      
+      openssl genrsa -out front-proxy-ca.key 2048
+      openssl req -x509 -new -nodes -key front-proxy-ca.key -subj "/CN=front-proxy-ca" -days 3650 -out front-proxy-ca.crt
+      
+      openssl genrsa -out apiserver.key 2048
+      openssl req -new -key apiserver.key -out apiserver.csr -config apiserver-csr.conf
+      openssl x509 -req -in apiserver.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out apiserver.crt -days 3650 -extensions v3_ext -extfile apiserver-csr.conf
+      
+      openssl genrsa -out apiserver-kubelet-client.key 2048
+      openssl req -new -key apiserver-kubelet-client.key -out apiserver-kubelet-client.csr -config apiserver-kubelet-client-csr.conf
+      openssl x509 -req -in apiserver-kubelet-client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out apiserver-kubelet-client.crt -days 3650
+      
+      openssl genrsa -out front-proxy-client.key 2048
+      openssl req -new -key front-proxy-client.key -out front-proxy-client.csr -config front-proxy-client-csr.conf
+      openssl x509 -req -in front-proxy-client.csr -CA front-proxy-ca.crt -CAkey front-proxy-ca.key -CAcreateserial -out front-proxy-client.crt -days 3650
+      
+      openssl genrsa -out sa.key 2048
+      openssl rsa -in sa.key -pubout > sa.pub
+      
+      mkdir -p /etc/kubernetes/pki/
+      cp *.key /etc/kubernetes/pki/
+      cp *.crt /etc/kubernetes/pki/
+      cp *.pub /etc/kubernetes/pki/
+    when: not tmpf3.stat.exists
+#  - name: "install k8s master"
+#    shell: 'kubeadm init --config=/root/k8sconfig.yaml --ignore-preflight-errors="Swap"'
+
+- hosts: node
+  user: root
+  gather_facts: true
+  tasks:
+  - name: "k8s load token"
+    local_action: shell cat ./token.var
+    register: token_result
+  - name: "test"
+    debug: var=token_result.stdout
+#  - name: "join k8s node"
+#    shell: 'kubeadm join {{ endpoint } --token {{token_result.stdout}} --discovery-token-unsafe-skip-ca-verification --ignore-preflight-errors=cri --ignore-preflight-errors="Swap"}'
