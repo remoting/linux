@@ -73,7 +73,7 @@ show slave status;
 cat <<EOF | tee /etc/yum.repos.d/proxysql.repo
 [proxysql_repo]
 name= ProxySQL
-baseurl=http://repo.proxysql.com/ProxySQL/proxysql-1.4.x/centos/\$releasever
+baseurl=http://repo.proxysql.com/ProxySQL/proxysql-2.0.x/centos/\$releasever
 gpgcheck=1
 gpgkey=http://repo.proxysql.com/ProxySQL/repo_pub_key
 EOF
@@ -108,7 +108,7 @@ LOAD MYSQL VARIABLES TO RUNTIME;
 SAVE MYSQL VARIABLES TO DISK;
 
 
-delete from mysql_users;
+delete  from mysql_users;
 
 INSERT INTO mysql_users(username,password,default_hostgroup,transaction_persistent) VALUES ('root','Dev@123456',1,0);
 
@@ -118,8 +118,13 @@ SAVE MYSQL USERS TO DISK;
 
 delete from mysql_query_rules;
 
-INSERT INTO mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) VALUES (1,1,'^(\s)*SELECT(.|\n)+',2,0);
-INSERT INTO mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) VALUES (2,1,'/\*(\s)*FORCE_MASTER(\s)*\*/',1,1);
+INSERT INTO mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) VALUES (1,1,'/\*(\s*)FORCE_MASTER(\s*)\*/',1,1);
+INSERT INTO mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) VALUES (2,1,'^(\s*)|(\s*/\*.*\*/\s*)SELECT',2,1);
 
 LOAD MYSQL QUERY RULES TO RUNTIME;
-SAVE MYSQL USERS TO DISK;
+SAVE MYSQL QUERY RULES TO DISK;
+
+
+select * from stats.stats_mysql_query_rules;
+select * from stats.stats_mysql_commands_counters;
+select * from stats.stats_mysql_processlist;
