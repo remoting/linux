@@ -118,8 +118,10 @@ SAVE MYSQL USERS TO DISK;
 
 delete from mysql_query_rules;
 
-INSERT INTO mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) VALUES (1,1,'/\*(\s*)FORCE_MASTER(\s*)\*/',1,1);
-INSERT INTO mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) VALUES (2,1,'^(\s*)|(\s*/\*.*\*/\s*)SELECT',2,1);
+INSERT INTO mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) VALUES (1,1,'/\*\s*FORCE_MASTER\s*\*/',1,1);
+INSERT INTO mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) VALUES (2,1,'^\s*(/\*[^(\*/)]?\*/)*\s*SELECT.*FOR UPDATE$',1,1);
+INSERT INTO mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) VALUES (3,1,'^\s*(/\*[^(\*/)]?\*/)*\s*SELECT',2,1);
+
 
 LOAD MYSQL QUERY RULES TO RUNTIME;
 SAVE MYSQL QUERY RULES TO DISK;
