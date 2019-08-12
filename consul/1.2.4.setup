@@ -1,0 +1,44 @@
+/etc/systemd/system/consul.service
+
+[Unit]
+Description="HashiCorp Consul - A service mesh solution"
+Documentation=https://www.consul.io/
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=root
+Group=root
+ExecStart=/usr/local/bin/consul agent -config-dir=/etc/consul
+ExecReload=/usr/local/bin/consul reload
+KillMode=process
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+/etc/consul/config.json
+{
+  "datacenter": "prod",
+  "acl_datacenter": "prod",
+  "acl_master_token": "id",
+  "acl_agent_token": "id",
+  "acl_default_policy": "deny",
+  "data_dir": "/data/consul",
+  "log_level": "WARN",
+  "node_name": "m1",
+  "server": true,
+  "domain": "consul.local",
+  "advertise_addr": "10.9.40.120",
+  "addresses": {
+    "https": "0.0.0.0"
+  },
+  "retry_join": ["10.9.40.120","10.9.40.121","10.9.40.122"],
+  "rejoin_after_leave":true,
+  "bootstrap_expect": 2,
+  "client_addr":"0.0.0.0",
+  "ui":true
+}
