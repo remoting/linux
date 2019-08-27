@@ -1,0 +1,15 @@
+安装SS 
+./shadowsocks2-linux -c 'ss://chacha20-ietf-poly1305:xxx@xxx:xxx' -verbose -socks :1080
+安装 privoxy
+systemctl start privoxy
+设置代理
+export http_proxy=http://127.0.0.1:8118
+备份证书
+保留ca.key,ca.crt,sa.key,sa.pub
+生成证书
+kubeadm alpha phase certs all --apiserver-advertise-address=10.9.50.6 --apiserver-cert-extra-sans=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.default.svc.cluster.local,172.20.0.1,172.20.0.10
+kubeadm alpha phase kubeconfig all --apiserver-advertise-address=10.9.50.6
+重启服务器
+reboot
+
+kubeadm join 10.9.50.6:6443 --token 4u84db.72948eu3bf769g3l --discovery-token-ca-cert-hash sha256:5d42275213213453e9f03c0bf3acfd0fe8b6d2d3f68e07c62a15b752ab97d7a9 --ignore-preflight-errors="Swap"
