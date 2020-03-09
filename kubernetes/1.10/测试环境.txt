@@ -1,0 +1,13 @@
+测试环境
+
+1，备份证书
+/etc/kubernetes/pki/目录下保留ca.key,ca.crt,sa.key,sa.pub，其余的全部删除，
+/etc/kubernetes/*.conf  删除
+2，重新生成
+kubeadm alpha phase certs all --apiserver-advertise-address=10.9.38.134 --apiserver-cert-extra-sans=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.default.svc.cluster.local,172.41.0.1,172.41.0.10,172.40.0.1,172.40.0.10
+
+kubeadm alpha phase kubeconfig all --apiserver-advertise-address=10.9.38.134
+3，拷贝新的配置文件
+cp /etc/kubernetes/admin.conf ~/.kube/config
+4, 验证
+kubectl get nodes

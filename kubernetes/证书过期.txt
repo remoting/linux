@@ -1,4 +1,4 @@
-安装SS 
+ 安装SS 
 ./shadowsocks2-linux -c 'ss://chacha20-ietf-poly1305:xxx@xxx:xxx' -verbose -socks :1080
 安装 privoxy
 systemctl start privoxy
