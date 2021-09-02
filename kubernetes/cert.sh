@@ -65,6 +65,9 @@ main $@
 # kubectl delete pod $(kubectl get pods -o wide -n kube-system | grep kubernetes-dashboard | awk '{print $1}') -n kube-system
 # kubectl get pods -o wide -n kube-system
 
+# kubectl create secret docker-registry regcred --docker-server=http://registry.dev.chelizitech.com --docker-username=xxx --docker-password=xxx --docker-email=r@y.cn
+# kubectl create secret docker-registry regcred --docker-server=DOCKER_REGISTRY_SERVER --docker-username=DOCKER_USER --docker-password=DOCKER_PASSWORD --docker-email=
+# kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "regcred"}]}'
 
 
 
