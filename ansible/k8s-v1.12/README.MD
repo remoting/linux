@@ -14,3 +14,8 @@ ansible-playbook -i ./standard/hosts ./standard/install.yml
 
 
 ```
+
+# kubeadm
+```
+https://kubernetes.io/zh/docs/reference/setup-tools/kubeadm/kubeadm-config/
+```
