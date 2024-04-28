@@ -1,11 +1,13 @@
 #!/bin/bash
 cd `dirname $0`
-pemfile="./fullchain.cer"
+# 设置要检查的域名和端口
+DOMAIN="www.baidu.com"  #域名
+PORT=443              #端口
 
 # 获取SSL证书信息
-CERT_INFO=$(openssl x509 -in $pemfile -noout -dates)
-DOMAIN=$(openssl x509 -in $pemfile -noout -ext subjectAltName | grep DNS)
-ISSUER=$(openssl x509 -in $pemfile -noout -issuer)
+CERT_INFO=$(openssl s_client -connect ${DOMAIN}:${PORT} -showcerts </dev/null 2> /dev/null | openssl x509 -noout -dates)
+ISSUER=$(openssl s_client -connect ${DOMAIN}:${PORT} -showcerts </dev/null 2> /dev/null | openssl x509 -noout -issuer)
+DOMAIN=$(openssl s_client -connect ${DOMAIN}:${PORT} -showcerts </dev/null 2> /dev/null | openssl x509 -noout -ext subjectAltName | grep DNS)
 # 提取证书过期日期信息
 START_DATE=$(echo "${CERT_INFO}" | grep "notBefore" | cut -d'=' -f 2)
 END_DATE=$(echo "${CERT_INFO}" | grep "notAfter" | cut -d'=' -f 2)
