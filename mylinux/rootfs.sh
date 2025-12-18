@@ -1,0 +1,1 @@
+mkdir -p "$WORK_DIR"/{boot/grub,EFI/BOOT}
