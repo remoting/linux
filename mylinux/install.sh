@@ -27,32 +27,26 @@ dd if=/dev/zero of="$TARGET_DEV" bs=1M count=1 conv=fdatasync
 
 # 通知内核分区表已变
 partprobe "$TARGET_DEV" || true
-# 2. 磁盘分区与格式化
-echo "正在对 $TARGET_DEV 进行分区..."
-# 创建 GPT 分区表
-# 分区 1: 512MB EFI (ef00)
-# 分区 2: 剩余空间 Root (8300)
-sgdisk --zap-all "$TARGET_DEV"
-sgdisk -n 1:0:+512M -t 1:ef00 -c 1:"EFI_SYSTEM" "$TARGET_DEV"
-sgdisk -n 2:0:0     -t 2:8300 -c 2:"DEBIAN_ROOT" "$TARGET_DEV"
-
+# 2. 磁盘分区 (使用 MBR)
+echo "正在创建 MBR 分区..."
+# 创建单分区作为根目录，设为启动分区 (bootable)
+parted -s "$TARGET_DEV" mklabel msdos
+parted -s "$TARGET_DEV" mkpart primary ext4 1MiB 100%
+parted -s "$TARGET_DEV" set 1 boot on
 # 强制刷新内核分区表
 partprobe "$TARGET_DEV"
 sleep 2
 
 # 格式化分区
 echo "正在格式化分区..."
-mkfs.vfat -F 32 "${TARGET_DEV}1"
-mkfs.ext4 -F "${TARGET_DEV}2"
+mkfs.ext4 -F "${TARGET_DEV}1"
 
-# 3. 挂载并部署 Rootfs
+# 挂载并部署 Rootfs
 echo "正在挂载分区并执行 debootstrap..."
-mount "${TARGET_DEV}2" "$MOUNT_DIR"
-mkdir -p "$MOUNT_DIR/boot/efi"
-mount "${TARGET_DEV}1" "$MOUNT_DIR/boot/efi"
+mount "${TARGET_DEV}1" "$MOUNT_DIR"
 
 # 安装基础系统及核心包 (内核、GRUB、基础工具)
-debootstrap --arch=amd64 --include=linux-image-amd64,grub-efi-amd64,locales,isc-dhcp-client,vim,openssh-server trixie "$MOUNT_DIR" "$MIRROR"
+debootstrap --arch=amd64 --include=linux-image-amd64,grub-pc,locales,isc-dhcp-client,vim,openssh-server trixie "$MOUNT_DIR" "$MIRROR"
 
 # 4. 准备 Chroot 环境
 echo "挂载虚拟文件系统..."
@@ -61,8 +55,7 @@ for i in /dev /dev/pts /proc /sys /run; do
 done
 
 # 获取 UUID
-UUID_ROOT=$(blkid -s UUID -o value "${TARGET_DEV}2")
-UUID_EFI=$(blkid -s UUID -o value "${TARGET_DEV}1")
+UUID_ROOT=$(blkid -s UUID -o value "${TARGET_DEV}1")
 
 # 5. 在新系统中进行配置 (Chroot 内部命令)
 echo "进入 Chroot 进行配置..."
@@ -116,7 +109,6 @@ echo "root:123456" | chpasswd
 # 生成 fstab
 cat > /etc/fstab <<FSTAB
 UUID=$UUID_ROOT  /      ext4  errors=remount-ro  0  1
-UUID=$UUID_EFI   /boot/efi  vfat  umask=0077  0  2
 FSTAB
 
 # 配置软件源
@@ -134,7 +126,8 @@ systemctl enable networking.service
 
 # 安装 GRUB 到标准位置 (关键点：--removable 不依赖主板注册)
 # 这样即使移除第一块硬盘，第二块硬盘在 /EFI/BOOT/ 下也有引导文件
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --no-nvram --removable
+update-initramfs -u
+grub-install --target=i386-pc "$TARGET_DEV"
 update-grub
 
 EOF
