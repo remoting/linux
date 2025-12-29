@@ -1,4 +1,5 @@
-
+# Debian 安装 Docker
+``` bash
 apt install gnupg
 curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
@@ -6,3 +7,4 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
 
 apt update
 apt install docker-ce
+```
