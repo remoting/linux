@@ -10,7 +10,7 @@ chown -R postgres:postgres /opt/postgresql
 
 # 切换到 postgres 用户执行 initdb
 # sudo -u postgres /opt/postgresql/bin/initdb -D /opt/postgresql/data
-su -s /bin/bash -c "/opt/postgresql/bin/initdb -D /opt/postgresql/data" postgres
+su -s /bin/bash -c "/opt/postgresql/bin/initdb -D /opt/postgresql/data -E UTF8 --locale=en_US.UTF-8" postgres
 # 启动测试
 # sudo -u postgres /opt/postgresql/bin/pg_ctl -D /opt/postgresql/data -l logfile start
 
